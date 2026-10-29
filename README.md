@@ -31,7 +31,7 @@ npm install
 
 ```bash
 npm run build      # comprova tipus i compila el client web a apps/web/dist
-npm start          # servidor de joc + client al port 3000 (NODE_ENV=production)
+npm start          # servidor de joc + client al port 3000 (funciona a Windows, Mac i Linux)
 ```
 
 La consola mostra les adreces LAN, per exemple `LAN: http://192.168.1.40:3000`.
@@ -85,7 +85,7 @@ No hi ha cap secret ni credencial: no cal `.env`.
 El servidor és un únic procés Node que serveix el client i el WebSocket al mateix port.
 
 1. `npm ci && npm run build`
-2. `NODE_ENV=production PORT=3000 PUBLIC_URL=https://el-teu-domini npm start`
+2. `PORT=3000 PUBLIC_URL=https://el-teu-domini npm start` (a Windows: `$env:PORT=3000; npm start`)
 3. Posa-hi davant un proxy amb TLS (Caddy, Nginx, Traefik) o una plataforma que en doni
    (Render, Fly.io, Railway…). Requisits: **WebSocket upgrade a `/ws`**, timeouts d'inactivitat
    ≥ 60 s (el servidor fa ping cada 10 s), i **una sola instància** (les sales viuen a memòria; per

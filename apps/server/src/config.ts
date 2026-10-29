@@ -30,7 +30,7 @@ export function loadConfig(overrides: Partial<ServerConfig> = {}): ServerConfig 
     publicUrl: process.env.PUBLIC_URL?.replace(/\/$/, '') || null,
     maxRooms: intEnv('MAX_ROOMS', 300),
     staticDir: process.env.STATIC_DIR ?? path.resolve(here, '../../web/dist'),
-    serveStatic: process.env.NODE_ENV === 'production' || process.env.SERVE_STATIC === '1',
+    serveStatic: process.env.NODE_ENV === 'production' || process.env.SERVE_STATIC === '1' || process.argv.includes('--serve'),
     allowedOrigins: (process.env.ALLOWED_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean),
     ...overrides,
   };
