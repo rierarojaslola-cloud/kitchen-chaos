@@ -59,15 +59,31 @@ export function chefPortrait(c: CharacterDef, size = 96): string {
     curly: Array.from({ length: 9 }, (_, i) => `<circle cx="${32 + i * 4.5}" cy="${34 - Math.sin((i / 8) * Math.PI) * 8}" r="6" fill="${c.hair}"/>`).join(''),
     buns: `<path d="M30 40a20 18 0 0 1 40 0c-6-6-30-6-40 0z" fill="${c.hair}"/><circle cx="30" cy="28" r="8" fill="${c.hair}"/><circle cx="70" cy="28" r="8" fill="${c.hair}"/>`,
     ponytail: `<path d="M30 40a20 18 0 0 1 40 0c-6-6-30-6-40 0z" fill="${c.hair}"/><path d="M68 38q14 6 8 26" stroke="${c.hair}" stroke-width="7" fill="none" stroke-linecap="round"/>`,
-    mohawk: `<path d="M44 20l6-10 6 10 0 10h-12z" fill="${c.hair}"/>`,
+    mohawk: `<path d="M30 40a20 18 0 0 1 40 0c-6-6-30-6-40 0z" fill="${c.hair}" opacity=".75"/><path d="M45 34l5-16 5 16z" fill="${c.hair}"/>`,
     bald: '',
+    afro: `<path d="M31 44q-2-16 19-18q21 2 19 18q-8-9-38 0z" fill="${c.hair}"/>`,
+    braid: `<path d="M30 40a20 18 0 0 1 40 0c-10-8-28-4-40 0z" fill="${c.hair}"/>${[0, 1, 2, 3, 4].map((i) => `<ellipse cx="${31 - (i % 2) * 2}" cy="${58 + i * 7}" rx="4.5" ry="4.2" fill="${c.hair}" stroke="${INK}" stroke-width="1.2"/>`).join('')}`,
+    long: `<path d="M30 40a20 18 0 0 1 40 0c-6-6-30-6-40 0z" fill="${c.hair}"/><path d="M29 44q-3 14 2 24M71 44q3 14-2 24" stroke="${c.hair}" stroke-width="7" fill="none" stroke-linecap="round"/>`,
   };
+  /** Shapes drawn behind the head (volume of hair / headscarf). */
+  const behind: Record<string, string> = {
+    afro: `<circle cx="50" cy="40" r="29" fill="${c.hair}" stroke="${INK}" stroke-width="2.5"/>`,
+    long: `<path d="M27 42q0-22 23-22t23 22v30h-46z" fill="${c.hair}" stroke="${INK}" stroke-width="2.5"/>`,
+  };
+  const covered = c.hat === 'hijab';
+  const hijabBack = covered
+    ? `<path d="M22 86q2-14 8-20a26 27 0 1 1 40 0q6 6 8 20z" fill="${c.hair}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`
+    : '';
+  const lashes = c.lashes
+    ? `<path d="M39.6 45.2l-2.6-1.6M40.4 44.2l-1.4-2.4M60.4 45.2l2.6-1.6M59.6 44.2l1.4-2.4" stroke="${INK}" stroke-width="1.6" stroke-linecap="round"/>`
+    : '';
   const hats: Record<string, string> = {
     toque: `<rect x="36" y="22" width="28" height="10" rx="3" fill="#fbfaf6" stroke="${INK}" stroke-width="2.5"/><path d="M34 22c-8-2-6-14 4-12 2-8 22-8 24 0 10-2 12 10 4 12z" fill="#fbfaf6" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
     beret: `<ellipse cx="52" cy="28" rx="24" ry="8" fill="#27445f" stroke="${INK}" stroke-width="2.5" transform="rotate(-10 52 28)"/>`,
     bandana: `<path d="M30 36q20-10 40 0l-2 6q-18-8-36 0z" fill="#e2553f" stroke="${INK}" stroke-width="2.5"/>`,
     mushroom: `<path d="M24 34c0-18 52-18 52 0z" fill="#fbfaf6" stroke="${INK}" stroke-width="2.5"/>`,
     cap: `<path d="M30 36a20 16 0 0 1 40 0z" fill="${c.primary}" stroke="${INK}" stroke-width="2.5"/><path d="M50 36h24a3 3 0 0 1 0 5H50z" fill="#164f4f" stroke="${INK}" stroke-width="2.5"/>`,
+    hijab: `<path d="M28 47a22 22 0 0 1 44 0q-22-14-44 0z" fill="${c.hair}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
     none: '',
   };
   const acc: Record<string, string> = {
@@ -79,11 +95,14 @@ export function chefPortrait(c: CharacterDef, size = 96): string {
     none: '',
   };
   return `<svg class="portrait" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
+    ${covered ? '' : behind[c.hairStyle] ?? ''}
     <path d="M${50 - w} 100v-14a${w} 16 0 0 1 ${w * 2} 0v14z" fill="${c.primary}" stroke="${INK}" stroke-width="2.5"/>
     <path d="M${50 - w * 0.55} 100v-16h${w * 1.1}v16z" fill="${c.secondary}" stroke="${INK}" stroke-width="2.5"/>
+    ${hijabBack}
     <circle cx="50" cy="48" r="${21 * c.headScale}" fill="${c.skin}" stroke="${INK}" stroke-width="2.5"/>
-    ${hairStyles[c.hairStyle] ?? ''}
+    ${covered ? '' : hairStyles[c.hairStyle] ?? ''}
     <circle cx="42" cy="47" r="2.6" fill="${INK}"/><circle cx="58" cy="47" r="2.6" fill="${INK}"/>
+    ${lashes}
     <ellipse cx="38" cy="54" rx="3.5" ry="2" fill="#ff8c8c" opacity=".6"/><ellipse cx="62" cy="54" rx="3.5" ry="2" fill="#ff8c8c" opacity=".6"/>
     <path d="M44 57q6 5 12 0" fill="none" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>
     ${acc[c.accessory] ?? ''}

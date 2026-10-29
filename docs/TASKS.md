@@ -17,6 +17,7 @@
     x-ray silhouette or lower the front counters.
 
 ## P2 — content & features
+8c. Lazy-load chef models (only the 4 chosen) to cut the initial download (1.97 MB now).
 9. Cosmetic unlocks (hats/aprons/colours) earned by stars; chef customisation screen.
 10. New mechanics: dish-washing (dirty plates + sink), moving hazards (delivery cart), conveyor.
 11. Fourth restaurant (desserts) with the pending ingredients (eggs, flour, chocolate, cream, ice cream, fruit).

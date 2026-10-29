@@ -20,22 +20,32 @@ builder. `?procedural=1` forces the old models (for comparison). Review renders:
 
 | Budget | Target | Actual |
 |---|---|---|
-| Character | ≤ 15k tris | 10.0k – 12.4k |
+| Character | ≤ 15k tris | 10.6k – 14.3k |
 | Station | ≤ 8k tris | 1.1k – 2.8k |
-| Download, all 16 models | — | 1.25 MB (meshopt) from 2.7 MB raw |
+| Download, all 20 models | — | 1.97 MB (meshopt) |
 
 Remaining runtime-procedural (P): food items, plates, decor, textures, VFX, icons.
 
 ## Characters (`assets-src/blender/chefs.py` → `chef-<id>.glb`; fallback `render/models/chef.ts`)
 
+Cast policy: 10 chefs, 4 men and 6 women, from different origins (Turkey, Nigeria, Catalonia ×2,
+China, Samoa, India, Italy, Mexico, Morocco), skin tones from very light to very dark, distinct hair
+textures (straight, curly, coily/afro, braided, covered). Home towns are flavour text only; taglines
+describe personality, never ethnicity. Women get small eyelash strokes as a readability cue. Review:
+`docs/assets/chefs-women.png`, `docs/assets/chefs-men.png`.
+
 | ID | Name | Function | Format | Variants | Materials | Animations | Status | Q | Priority |
 |---|---|---|---|---|---|---|---|---|---|
-| CHR-NURI | Nuri | playable chef | GLB (8-bone rig, 7 clips) | toque, short hair, earring | jacket, apron, skin, hair | idle breathe, blink, walk, carry, chop, repair, celebrate, sad | verificat | B | P1 |
-| CHR-BRU | Bru | playable chef | GLB (8-bone rig, 7 clips) | beret, curly hair, beard, wide body | idem | idem | verificat | B | P1 |
-| CHR-KAI | Kai | playable chef | GLB (8-bone rig, 7 clips) | bandana, mohawk, tall/slim | idem | idem | verificat | B | P1 |
-| CHR-LUA | Lua | playable chef | GLB (8-bone rig, 7 clips) | twin buns, glasses, short | idem | idem | verificat | B | P1 |
-| CHR-ROCCO | Rocco | playable chef | GLB (8-bone rig, 7 clips) | mushroom hat, mustache, bald | idem | idem | verificat | B | P1 |
-| CHR-MEI | Mei | playable chef | GLB (8-bone rig, 7 clips) | cap, ponytail, scarf | idem | idem | verificat | B | P1 |
+| CHR-NURI | Nuri (m) · Esmirna | playable chef | GLB (8-bone rig, 7 clips) | toque, short black hair, earring; olive skin | jacket, apron, skin, hair | idle, blink, walk, carry, chop, repair, celebrate, sad | verificat | B | P1 |
+| CHR-AMARA | Amara (f) · Lagos | playable chef | GLB | afro with yellow headband, earring; deep brown skin | idem | idem | verificat | B | P1 |
+| CHR-BRU | Bru (m) · Barcelona | playable chef | GLB | beret, black curly hair, full beard, wide body; dark brown skin | idem | idem | verificat | B | P1 |
+| CHR-MEI | Mei (f) · Chengdu | playable chef | GLB | cap, ponytail, scarf; light skin | idem | idem | verificat | B | P1 |
+| CHR-KAI | Kai (m) · Apia | playable chef | GLB | bandana, buzz cut + crest, tall/slim; brown skin | idem | idem | verificat | B | P1 |
+| CHR-PRIYA | Priya (f) · Bangalore | playable chef | GLB | side parting, braid over the shoulder; brown skin | idem | idem | verificat | B | P1 |
+| CHR-ROCCO | Rocco (m) · Nàpols | playable chef | GLB | mushroom hat, mustache, bald; light skin | idem | idem | verificat | B | P1 |
+| CHR-XIMENA | Ximena (f) · Oaxaca | playable chef | GLB | toque, long hair with side locks; tan skin | idem | idem | verificat | B | P1 |
+| CHR-LUA | Lua (f) · Girona | playable chef | GLB | pink twin buns, glasses, short; very light skin | idem | idem | verificat | B | P1 |
+| CHR-LEILA | Leila (f) · Marràqueix | playable chef | GLB | teal hijab with shoulder drape; tan skin | idem | idem | verificat | B | P1 |
 | CHR-PORTRAIT-* | portraits | lobby/phone UI | inline SVG | 1 per chef | flat | — | verificat | P | P2 |
 | CHR-RING / BADGE | slot ring + J1–J4 badge | identity at distance (colour + number) | runtime mesh / sprite | 4 slots | emissive | pulse, bob | verificat | P | P1 |
 
@@ -147,6 +157,10 @@ Pending: liquid splashes, dough stretch, conveyor, door/drawer animations.
 5. Human sound-design/music pass.
 
 ## Change log
+- 2026-10-29: cast extended to 10 (Amara, Priya, Ximena, Leila); male cast diversified (Nuri olive skin,
+  Bru dark skin/black hair, Kai brown skin with buzz cut + crest). New hair styles afro/braid/long, hijab,
+  lashes, home towns. Fixed in review: afro hiding the face from the game camera, braid invisible from the
+  front, hijab colour clashing with apron, teal eyebrows, angry-looking portrait lashes. Download 1.97 MB.
 - 2026-10-29: Blender pipeline; 6 chefs + 10 stations moved from P to B (GLB). Fixed in review: apron
   intersecting belly, scalp poking through hair, hair through cap, oven fire hidden, emissive materials
   exported black.

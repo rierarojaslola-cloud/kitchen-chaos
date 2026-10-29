@@ -54,7 +54,7 @@ Legend: ✅ **verified** (automated test or browser E2E evidence) · 🟡 **impl
 - ✅ Station state indicators (progress bars, burn "!", broken wrench, glow/flames/oil)
 - ✅ Particles (steam, smoke, sparks, bits, confetti, stars, flames)
 - ✅ Static batching: draw calls 695 → 214 (menu scene, high quality); 251 in a 4-player game
-- ✅ Blender pipeline: 6 rigged chefs (7 clips, 2-layer blending) + 10 stations as GLB, 1.25 MB, auto fallback
+- ✅ Blender pipeline: 10 rigged chefs (4 men, 6 women, diverse origins; 7 clips, 2-layer blending) + 10 stations as GLB, 1.97 MB, auto fallback
 - 🧪 Food, plates, decor, textures still procedural; no PBR normal/roughness maps
 - 🟡 Audio engine (22 SFX + 4 music styles, intensity levels, volume/mute persisted) — **never listened to by a human**; headless tests have no audio output
 - ⬜ Weighted skinning / facial shape keys, hand-finished art pass, hand-made icons/illustrations

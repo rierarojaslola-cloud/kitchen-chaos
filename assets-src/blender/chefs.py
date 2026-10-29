@@ -131,14 +131,18 @@ class ChefBuilder:
         parts = []
         skull = sphere('skull', r, (0, 0, z), self.m_skin, scale=(1, 0.96, 0.95), segments=24, rings=16)
         parts.append(skull)
+        covered = c['hat'] == 'hijab'
         for side in (-1, 1):
-            parts.append(sphere(f'ear{side}', r * 0.2, (side * r * 0.97, 0.02, z - r * 0.05), self.m_skin, scale=(0.6, 1, 1.1), segments=12, rings=8))
-            brow = box(f'brow{side}', (r * 0.32, r * 0.06, r * 0.07), (side * r * 0.36, -r * 0.88, z + r * 0.33), self.m_hair, bevel=r * 0.025, segments=2)
+            if not covered:
+                parts.append(sphere(f'ear{side}', r * 0.2, (side * r * 0.97, 0.02, z - r * 0.05), self.m_skin, scale=(0.6, 1, 1.1), segments=12, rings=8))
+            brow_mat = material(f'{c["id"]}_brow', '#2a1a12', rough=0.7) if covered else self.m_hair
+            brow = box(f'brow{side}', (r * 0.32, r * 0.06, r * 0.07), (side * r * 0.36, -r * 0.88, z + r * 0.33), brow_mat, bevel=r * 0.025, segments=2)
             brow.rotation_euler = (0, side * rad(10), 0)
             parts.append(brow)
             parts.append(sphere(f'blush{side}', r * 0.13, (side * r * 0.56, -r * 0.74, z - r * 0.17), self.m_blush, scale=(1, 0.35, 0.6), segments=12, rings=8))
         parts.append(sphere('nose', r * 0.13, (0, -r * 0.97, z - r * 0.05), material(f'{c["id"]}_nose', shade(c['skin'], -0.05), rough=0.5), scale=(1, 0.9, 0.85), segments=14, rings=10))
-        parts.extend(self.hair())
+        if not covered:
+            parts.extend(self.hair())
         parts.extend(self.hat())
         parts.extend(self.accessory_head())
         return join(parts, 'Head')
@@ -149,7 +153,13 @@ class ChefBuilder:
         for side, tag in ((1, 'L'), (-1, 'R')):
             eye = sphere(f'Eye_{tag}', r * 0.13, (side * r * 0.36, -r * 0.86, z + r * 0.08), self.m_ink, scale=(0.85, 0.6, 1.2), segments=14, rings=10)
             glint = sphere(f'glint{tag}', r * 0.045, (side * r * 0.36 + r * 0.03, -r * 0.93, z + r * 0.14), self.m_glint, segments=8, rings=6)
-            out.append(join([eye, glint], f'Eye_{tag}'))
+            parts = [eye, glint]
+            if self.c.get('lashes'):
+                for k in range(2):
+                    lash = box(f'lash{tag}{k}', (r * 0.085, r * 0.03, r * 0.022), (side * r * (0.45 + k * 0.03), -r * 0.9, z + r * (0.2 - k * 0.05)), self.m_ink, bevel=r * 0.008, segments=1)
+                    lash.rotation_euler = (0, side * rad(-28 - k * 18), 0)
+                    parts.append(lash)
+            out.append(join(parts, f'Eye_{tag}'))
         return out
 
     def mouth(self):
@@ -188,10 +198,49 @@ class ChefBuilder:
             tail = sphere('tail', r * 0.24, (0, r * 1.05, z - r * 0.05), H, scale=(1, 1, 2.6), segments=14, rings=10)
             tail.rotation_euler = (rad(-25), 0, 0)
             out.append(tail)
+        elif st == 'afro':
+            # rounded volume of overlapping puffs sitting behind the hairline, face fully clear
+            cx, cy, cz = 0.0, r * 0.38, z + r * 0.4
+            out.append(sphere('afroCore', r * 1.05, (cx, cy + r * 0.05, cz), H, scale=(1.1, 1, 0.92), segments=20, rings=12))
+            n = 0
+            for ring_i, elev in enumerate((-0.35, 0.05, 0.45, 0.85)):
+                count = (10, 12, 10, 6)[ring_i]
+                for k in range(count):
+                    a = k / count * 2 * math.pi + ring_i * 0.4
+                    dx, dy, dz = math.cos(a) * math.cos(elev), math.sin(a) * math.cos(elev), math.sin(elev)
+                    if dy < -0.25 and dz < 0.6:
+                        continue  # nothing hangs over the face
+                    out.append(sphere(f'puff{n}', r * 0.46, (cx + dx * r * 1.02, cy + dy * r * 0.9, cz + dz * r * 0.85), H, segments=12, rings=8))
+                    n += 1
+            # bright headband marks the hairline so the face reads clearly at TV distance
+            out.append(torus('afroBand', r * 0.99, r * 0.085, (0, r * 0.02, z + r * 0.42), material(f'{self.c["id"]}_band', '#ffd166', rough=0.5), rot=(rad(-22), 0, 0), major_seg=28, minor_seg=8))
+        elif st == 'braid':
+            # side parting + a thick braid falling over the right shoulder to the front (visible from the camera)
+            out.append(cap())
+            out.append(sphere('sweep', r * 0.5, (-r * 0.35, -r * 0.62, z + r * 0.5), H, scale=(1.4, 0.6, 0.55), segments=14, rings=8))
+            segs = 9
+            for i in range(segs):
+                t = i / (segs - 1)
+                x = -r * (0.82 + 0.25 * math.sin(t * 2.2))
+                y = r * (0.15 - 1.05 * t)
+                zz = z - r * (0.25 + 2.0 * t)
+                out.append(sphere(f'braid{i}', r * (0.2 - t * 0.05), (x + r * 0.05 * (1 if i % 2 else -1), y, zz), H, scale=(1, 0.85, 1.2), segments=12, rings=8))
+            out.append(torus('braidTie', r * 0.1, r * 0.04, (-r * 0.9, -r * 0.98, z - r * 2.33), material(f'{self.c["id"]}_tie', '#ffd166', rough=0.5), major_seg=12, minor_seg=6))
+            out.append(sphere('braidEnd', r * 0.12, (-r * 0.9, -r * 1.02, z - r * 2.46), H, scale=(1, 0.8, 1.4), segments=10, rings=8))
+        elif st == 'long':
+            out.append(cap())
+            back = box('hairBack', (r * 1.8, r * 0.5, r * 1.7), (0, r * 0.62, z - r * 0.42), H, bevel=r * 0.22, segments=4)
+            out.append(back)
+            for side in (-1, 1):
+                out.append(sphere(f'lock{side}', r * 0.3, (side * r * 0.86, -r * 0.18, z - r * 0.38), H, scale=(0.75, 0.9, 2.0), segments=14, rings=10))
         elif st == 'mohawk':
-            for i in range(5):
-                spike = cylinder(f'spike{i}', r * 0.15, r * 0.5, (0, -r * 0.5 + i * r * 0.28, z + r * 1.05), H, verts=8, radius2=r * 0.02)
-                spike.rotation_euler = (rad(-20 + i * 10), 0, 0)
+            # short buzz cut with a tall crest from forehead to crown
+            buzz = material(f'{self.c["id"]}_buzz', shade(self.c['hair'], 0.08), rough=0.9)
+            out.append(sphere('buzz', r * 1.03, (0, r * 0.1, z + r * 0.32), buzz, scale=(1, 1, 0.66), segments=24, rings=12))
+            for i in range(7):
+                t = i / 6
+                spike = cylinder(f'spike{i}', r * 0.17, r * (0.42 + 0.12 * math.sin(t * math.pi)), (0, -r * 0.62 + t * r * 1.25, z + r * (0.82 + 0.18 * math.sin(t * math.pi))), H, verts=8, radius2=r * 0.03)
+                spike.rotation_euler = (rad(-45 + t * 95), 0, 0)
                 out.append(spike)
         return out
 
@@ -224,6 +273,27 @@ class ChefBuilder:
         elif hat == 'mushroom':
             out.append(lathe('mushHat', [(0.0, 0.0), (r * 0.82, 0), (r * 1.28, r * 0.26), (r * 1.18, r * 0.62), (r * 0.62, r * 1.02), (0.0, r * 1.1)], (0, 0, z + r * 0.58), W, steps=32))
             add_subsurf(out[-1], 1)
+        elif hat == 'hijab':
+            import bmesh
+            # headscarf colour comes from `hair` (the hair itself is hidden)
+            fabric = material(f'{c["id"]}_hijab', c['hair'], rough=0.85)
+            R = r * 1.1
+            hood = sphere('hood', R, (0, r * 0.04, z + r * 0.04), fabric, scale=(1, 1, 1.04), segments=28, rings=18)
+            bpy.context.view_layer.objects.active = hood
+            bpy.ops.object.mode_set(mode='EDIT')
+            bm = bmesh.from_edit_mesh(hood.data)
+            # open an oval for the face: front-facing vertices below the forehead line
+            face = [v for v in bm.verts if v.co.y < -R * 0.28 and v.co.z < R * 0.5 and abs(v.co.x) < R * 0.78]
+            bmesh.ops.delete(bm, geom=face, context='VERTS')
+            bmesh.update_edit_mesh(hood.data)
+            bpy.ops.object.mode_set(mode='OBJECT')
+            sol = hood.modifiers.new('Solidify', 'SOLIDIFY')
+            sol.thickness = r * 0.06
+            sol.offset = -1
+            drape = lathe('drape', [(r * 0.68, 0.0), (r * 0.82, -r * 0.3), (r * 1.02, -r * 0.62)], (0, r * 0.05, z - r * 0.45), fabric, steps=28)
+            dsol = drape.modifiers.new('Solidify', 'SOLIDIFY')
+            dsol.thickness = r * 0.05
+            out += [hood, drape]
         elif hat == 'cap':
             out.append(sphere('capDome', r * 1.1, (0, 0.01, z + r * 0.42), material(f'{c["id"]}_cap', c['primary'], rough=0.7), scale=(1, 1, 0.68), segments=24, rings=12))
             brim_col = '#164f4f' if c['secondary'] == '#f6efe2' else c['secondary']

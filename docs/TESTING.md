@@ -39,7 +39,7 @@ pizza-2, asian-1, asian-2, burger-2 load and render with 3 players · no console
   CPU-rendered browser responsive; timeouts for phone pages raised to 120 s).
 - `npx tsx tests/e2e/screens.ts --compare [levels]` captures every level with GLB and with `?procedural=1`.
   burger-2: GLB 250k tris / 358 draw calls vs procedural 281k / 281 (high quality).
-- Model review renders: `docs/assets/chefs-idle.png`, `stations-a.png`, `stations-b.png`.
+- Model review renders: `docs/assets/chefs-cast.png`, `stations-a.png`, `stations-b.png`.
 
 ## Simulated vs physical
 

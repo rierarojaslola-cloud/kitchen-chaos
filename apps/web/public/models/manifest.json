@@ -1,39 +1,63 @@
 {
+  "chef-amara": {
+    "file": "chef-amara.glb",
+    "tris": 14344,
+    "blender": "5.2.3 LTS",
+    "bytes": 203020
+  },
   "chef-bru": {
     "file": "chef-bru.glb",
     "tris": 12360,
     "blender": "5.2.3 LTS",
-    "bytes": 171884
+    "bytes": 171324
   },
   "chef-kai": {
     "file": "chef-kai.glb",
-    "tris": 10040,
+    "tris": 10624,
     "blender": "5.2.3 LTS",
-    "bytes": 143324
+    "bytes": 155680
+  },
+  "chef-leila": {
+    "file": "chef-leila.glb",
+    "tris": 10668,
+    "blender": "5.2.3 LTS",
+    "bytes": 163232
   },
   "chef-lua": {
     "file": "chef-lua.glb",
-    "tris": 10868,
+    "tris": 11044,
     "blender": "5.2.3 LTS",
-    "bytes": 151576
+    "bytes": 160080
   },
   "chef-mei": {
     "file": "chef-mei.glb",
-    "tris": 11196,
+    "tris": 11372,
     "blender": "5.2.3 LTS",
-    "bytes": 158240
+    "bytes": 167304
   },
   "chef-nuri": {
     "file": "chef-nuri.glb",
     "tris": 12300,
     "blender": "5.2.3 LTS",
-    "bytes": 177776
+    "bytes": 167624
+  },
+  "chef-priya": {
+    "file": "chef-priya.glb",
+    "tris": 11632,
+    "blender": "5.2.3 LTS",
+    "bytes": 165356
   },
   "chef-rocco": {
     "file": "chef-rocco.glb",
     "tris": 10424,
     "blender": "5.2.3 LTS",
-    "bytes": 141396
+    "bytes": 142572
+  },
+  "chef-ximena": {
+    "file": "chef-ximena.glb",
+    "tris": 12940,
+    "blender": "5.2.3 LTS",
+    "bytes": 180052
   },
   "station-board": {
     "file": "station-board.glb",

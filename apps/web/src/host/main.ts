@@ -353,7 +353,7 @@ async function renderLobby(): Promise<void> {
       h('span', { class: 'badge' }, SLOT_LABELS[slot]),
       svg(chefPortrait(c, 110)),
       h('div', { class: 'name' }, p.name),
-      h('div', { class: 'meta' }, `Xef ${c.name}`),
+      h('div', { class: 'meta' }, `Xef ${c.name} · ${c.from}`),
       h('div', { class: `state ${p.connected ? 'ok' : 'off'}` }, !p.connected ? 'Reconnectant…' : p.ready ? 'A punt!' : 'Connectat'),
       h('button', { class: 'kick', title: `Expulsar ${p.name}`, 'aria-label': `Expulsar ${p.name}`, onclick: () => confirmKick(p.id, p.name) }, '×'),
     );

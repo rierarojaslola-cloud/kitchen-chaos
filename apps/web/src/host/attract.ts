@@ -28,7 +28,7 @@ export class AttractMode {
     const level = getLevel(levelId) as LevelDef;
     this.levelId = levelId;
     const ids = ['demo-0', 'demo-1', 'demo-2'];
-    const chars = levelId.startsWith('pizza') ? ['rocco', 'lua', 'bru'] : levelId.startsWith('asian') ? ['mei', 'kai', 'nuri'] : ['nuri', 'bru', 'kai'];
+    const chars = levelId.startsWith('pizza') ? ['rocco', 'ximena', 'amara'] : levelId.startsWith('asian') ? ['mei', 'priya', 'kai'] : ['leila', 'bru', 'nuri'];
     this.sim = new GameSimulation({ ...level, duration: 1e9, events: [] }, ids.map((id, i) => ({ id, slot: i })), 3);
     this.scene.loadLevel(this.sim.initView(), ids.map((id, i) => ({ id, character: chars[i]! })), true);
     this.scene.setTopReserve(0, this.leftReserve);

@@ -130,6 +130,10 @@ body.pad {
   line-height: 1.25;
   text-align: center;
 }
+.chef small.from {
+  color: var(--mustard);
+  font-weight: 700;
+}
 .chef[aria-pressed='true'] {
   border-color: var(--mustard);
   background: rgb(255 194 61 / 0.14);

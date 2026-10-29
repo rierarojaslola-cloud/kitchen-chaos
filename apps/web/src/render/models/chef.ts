@@ -142,7 +142,7 @@ export function buildChef(def: CharacterDef): ChefRig {
   head.add(nose, mouth);
 
   // ── hair ──
-  switch (def.hairStyle) {
+  switch (def.hat === 'hijab' ? 'bald' : def.hairStyle) {
     case 'short': {
       const cap = mesh(sphere(headR * 1.03, 20, 12, ), hairM);
       cap.scale.set(1, 0.6, 1);
@@ -188,6 +188,35 @@ export function buildChef(def: CharacterDef): ChefRig {
         spike.rotation.x = -0.35 + i * 0.12;
         head.add(spike);
       }
+      break;
+    }
+    case 'afro': {
+      const big = mesh(sphere(headR * 1.32, 18, 12), hairM);
+      big.scale.set(1.05, 0.9, 1);
+      big.position.set(0, headR * 0.45, -headR * 0.35);
+      head.add(big);
+      break;
+    }
+    case 'braid': {
+      const cap = mesh(sphere(headR * 1.04, 20, 12), hairM);
+      cap.scale.set(1, 0.62, 1);
+      cap.position.set(0, headR * 0.3, -headR * 0.1);
+      head.add(cap);
+      for (let i = 0; i < 7; i++) {
+        const t = i / 6;
+        const b = mesh(sphere(headR * (0.19 - t * 0.05), 10, 8), hairM);
+        b.position.set(-headR * (0.85 + 0.2 * Math.sin(t * 2.2)), -headR * (0.25 + 1.9 * t), headR * (-0.1 + 1.0 * t));
+        head.add(b);
+      }
+      break;
+    }
+    case 'long': {
+      const cap = mesh(sphere(headR * 1.04, 20, 12), hairM);
+      cap.scale.set(1, 0.62, 1);
+      cap.position.set(0, headR * 0.3, -headR * 0.1);
+      const back = mesh(rbox(headR * 1.8, headR * 1.7, headR * 0.5, headR * 0.2), hairM);
+      back.position.set(0, -headR * 0.42, -headR * 0.6);
+      head.add(cap, back);
       break;
     }
     case 'bald':
@@ -249,6 +278,15 @@ export function buildChef(def: CharacterDef): ChefRig {
       brim.scale.set(1, 1, 0.75);
       brim.position.set(0, headR * 0.5, headR * 0.82);
       head.add(dome, brim);
+      break;
+    }
+    case 'hijab': {
+      const scarf = mat(def.hair, { rough: 0.85 });
+      const hood = mesh(sphere(headR * 1.12, 20, 14), scarf);
+      hood.position.set(0, headR * 0.06, -headR * 0.3);
+      const collar = mesh(cyl(headR * 0.95, headR * 1.15, headR * 0.6, 20), scarf);
+      collar.position.set(0, -headR * 0.95, -headR * 0.1);
+      head.add(hood, collar);
       break;
     }
     case 'none':
