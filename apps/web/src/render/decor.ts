@@ -143,23 +143,29 @@ export function buildDecor(level: LevelInitView, id: RestaurantId): DecorResult 
     const ring = mesh(torus(0.86, 0.06, Math.PI * 2, 8, 40), mat('#3a2617', { rough: 0.7 }), false);
     ring.position.set(W / 2, 1.95, backZ + 0.03);
     g.add(moon, ring);
-    for (let i = 0; i < 3; i++) {
-      const branch = mesh(cyl(0.015, 0.02, 0.9, 5), mat('#2a1a10'), false);
-      branch.position.set(W / 2 - 0.3 + i * 0.25, 1.75 + i * 0.1, backZ + 0.035);
-      branch.rotation.z = 0.9 - i * 0.4;
-      g.add(branch);
+    // a single blossom branch crossing the moon (reads as a branch, not clock hands)
+    const branch = mesh(cyl(0.022, 0.03, 1.5, 6), mat('#2a1a10'), false);
+    branch.position.set(W / 2 + 0.15, 1.75, backZ + 0.04);
+    branch.rotation.z = 1.15;
+    g.add(branch);
+    for (let i = 0; i < 9; i++) {
+      const t = i / 8 - 0.5;
+      const blossom = mesh(sphere(0.055, 8, 6), mat(i % 3 ? '#ff9fbf' : '#ffd1e0', { rough: 0.7 }), false);
+      blossom.position.set(W / 2 + 0.15 + t * 1.35 * Math.sin(1.15) + (i % 2 ? 0.06 : -0.05), 1.75 - t * 1.35 * Math.cos(1.15) + (i % 2 ? -0.07 : 0.07), backZ + 0.07);
+      g.add(blossom);
     }
     const tex = paintedSign(name, '#7a1f1a', '#ffd9a0', '400 120px "Lilita One", sans-serif');
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.85), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7 }));
     sign.position.set(W - 3.2, 2.1, backZ + 0.02);
     g.add(sign);
     // paper lanterns
-    for (let i = 0; i < 4; i++) {
-      const x = 2 + i * ((W - 4) / 3);
+    for (let i = 0; i < 3; i++) {
+      const x = 2 + i * ((W - 8) / 2); // stay clear of the sign on the right
       const lm = uniqueMat(i % 2 ? '#ff6b5c' : '#ffb35c', { rough: 0.9, emissive: i % 2 ? '#ff5a3c' : '#ffa53c', emissiveIntensity: 1.1 });
       const lantern = mesh(lumpy('lantern', 0.22, 0.02, 2, 1, 1.25, 1), lm, false);
       lantern.userData.dynamic = true;
-      lantern.position.set(x, 2.55, 2.4 + (i % 2) * 0.8);
+      // hung against the back wall above head height, never in front of stations
+      lantern.position.set(x, 2.25, backZ + 0.3);
       const cap = mesh(cyl(0.11, 0.11, 0.06, 10), mat('#1d1a1a'), false);
       cap.position.set(x, 2.84, lantern.position.z);
       g.add(lantern, cap);
