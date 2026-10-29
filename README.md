@@ -80,6 +80,16 @@ La prova E2E necessita un Chromium. Fa servir `CHROME_PATH` si existeix; si no, 
 
 No hi ha cap secret ni credencial: no cal `.env`.
 
+## Publicar a internet amb Render (recomanat per a jugadors)
+
+El repositori inclou `render.yaml`. A Render: **New → Blueprint**, tria el repositori de GitHub i
+confirma. Render executa `npm ci --include=dev && npm run build` i `npm start`, i dona una adreça
+`https://….onrender.com` amb HTTPS. No cal configurar `PUBLIC_URL`: el QR fa servir l'adreça amb què
+s'obre la pantalla gran. Pla gratuït: el servei s'adorm després de 15 minuts sense trànsit i tarda
+~1 minut a despertar; les sales es perden si el servei es reinicia.
+
+També hi ha un `Dockerfile` genèric per a altres plataformes (Fly.io, Koyeb, Railway).
+
 ## Desplegament (HTTPS)
 
 El servidor és un únic procés Node que serveix el client i el WebSocket al mateix port.

@@ -59,3 +59,14 @@ score. No accounts or personal data are stored server-side.
 **Status:** accepted
 `mergeStatic()` merges static meshes per material at level load (draw calls 695 → 214 measured in
 headless Chromium). Animated nodes opt out with `userData.dynamic = true`.
+
+## ADR-009 — Public hosting on Render (free web service)
+**Status:** proposed (2026-10-29)
+**Context:** Asking every player to install Node and run commands is not acceptable for real use.
+The server is a single Node process that already serves the client and the WebSocket on one port.
+**Decision:** ship `render.yaml` (Blueprint, free plan, health check `/healthz`) and a generic
+`Dockerfile`. Players only open a URL on the TV and scan the QR.
+**Consequences:** + zero install for players, HTTPS/WSS by default. − Free plan sleeps after 15 min idle
+(~1 min cold start) and rooms are lost on restart; upgrade to a paid instance for always-on.
+**Verified:** a clean checkout builds and serves with Render's exact build/start commands. The
+Dockerfile has not been built (no Docker in the dev environment).
