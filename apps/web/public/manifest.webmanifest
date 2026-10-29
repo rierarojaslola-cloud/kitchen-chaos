@@ -1,0 +1,10 @@
+{
+  "name": "Kitchen Chaos — Comandament",
+  "short_name": "KC Pad",
+  "start_url": "/controller.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#14303f",
+  "theme_color": "#14303f",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

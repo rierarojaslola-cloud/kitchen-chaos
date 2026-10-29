@@ -260,8 +260,11 @@ export interface LevelResults {
   thresholds: [number, number, number];
   delivered: number;
   expired: number;
+  /** Base points of delivered dishes (urgent ×2 included). */
+  dishPoints: number;
   tips: number;
   coopBonus: number;
+  /** Penalties actually deducted (score is clamped at 0, so these always add up). */
   wastePenalty: number;
   expiredPenalty: number;
   wasted: number;

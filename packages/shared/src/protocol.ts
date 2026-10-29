@@ -85,6 +85,8 @@ export interface RoomSnapshot {
   /** Why the game is paused, if it is. */
   pauseReason: 'host' | 'player' | 'disconnect' | null;
   countdownEndsAt: number | null;
+  /** Remaining countdown at send time (ms); clients use this, never their own clock vs server. */
+  countdownLeftMs: number | null;
   /** Number of players the current/last level was started with. */
   activePlayerCount: number;
 }
@@ -109,6 +111,8 @@ export type ServerMessage =
       full: boolean;
     }
   | { t: 'you'; hint: ControllerHint }
+  /** Personal feedback for one phone (errors / confirmations of that player's actions). */
+  | { t: 'fb'; kind: 'invalid' | 'served' | 'wrong' | 'pickup'; text: string }
   | { t: 'results'; results: LevelResults }
   | { t: 'kicked' }
   | { t: 'closed'; reason: string }

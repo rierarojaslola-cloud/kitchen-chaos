@@ -1,0 +1,170 @@
+@import '@fontsource/lilita-one/400.css';
+@import '@fontsource/rubik/400.css';
+@import '@fontsource/rubik/500.css';
+@import '@fontsource/rubik/700.css';
+
+:root {
+  /* Palette — "service at night": tile-blue kitchen, paper order tickets, tomato + mustard */
+  --tile: #14303f;
+  --tile-deep: #0c1f2a;
+  --steel: #21465c;
+  --steel-hi: #2e5a73;
+  --ticket: #fff4dc;
+  --ticket-shade: #f1e2c2;
+  --ink: #2a1d17;
+  --tomato: #ff5a3c;
+  --tomato-deep: #d63b22;
+  --mustard: #ffc23d;
+  --basil: #3fbf7f;
+  --sky: #3fa7ff;
+  --mist: #c9dde6;
+
+  --p1: #ff5a4e;
+  --p2: #3fa7ff;
+  --p3: #5fd068;
+  --p4: #ffc93c;
+
+  --font-display: 'Lilita One', 'Rubik', system-ui, sans-serif;
+  --font-body: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Type scale (1.25) */
+  --t-xs: 0.8rem;
+  --t-s: 1rem;
+  --t-m: 1.25rem;
+  --t-l: 1.563rem;
+  --t-xl: 1.953rem;
+  --t-2xl: 2.441rem;
+  --t-3xl: 3.815rem;
+
+  --r-ticket: 6px;
+  --r-pill: 999px;
+  --r-panel: 22px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Author display rules must never override the hidden attribute. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--tile);
+  color: var(--ticket);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 4px solid var(--mustard);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Primary button: a chunky "kitchen order bell" button */
+.btn {
+  --bg: var(--tomato);
+  --fg: #fff;
+  --edge: var(--tomato-deep);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  min-height: 3.2rem;
+  padding: 0.7em 1.4em 0.8em;
+  border: 0;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: var(--t-m);
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 0 var(--edge), 0 10px 24px rgb(0 0 0 / 0.25);
+  transform: translateY(0);
+  transition: transform 0.12s var(--ease-out), box-shadow 0.12s var(--ease-out), filter 0.12s;
+}
+.btn:hover {
+  filter: brightness(1.06);
+}
+.btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--edge), 0 4px 10px rgb(0 0 0 / 0.25);
+}
+.btn[disabled] {
+  filter: grayscale(0.7) brightness(0.8);
+  cursor: not-allowed;
+  transform: none;
+}
+.btn.secondary {
+  --bg: var(--steel-hi);
+  --edge: #163445;
+}
+.btn.paper {
+  --bg: var(--ticket);
+  --fg: var(--ink);
+  --edge: #d7c49d;
+}
+.btn.go {
+  --bg: var(--basil);
+  --edge: #24895a;
+}
+.btn.small {
+  min-height: 2.4rem;
+  font-size: var(--t-s);
+  padding: 0.45em 1em 0.55em;
+  border-radius: 12px;
+}
+
+/* Paper order ticket with a torn bottom edge — the signature element */
+.ticket {
+  position: relative;
+  background: var(--ticket);
+  color: var(--ink);
+  border-radius: var(--r-ticket) var(--r-ticket) 0 0;
+  box-shadow: 0 8px 18px rgb(0 0 0 / 0.28);
+  --tear: 7px;
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--tear)) no-repeat,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--tear) * 2) var(--tear) repeat-x;
+  mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--tear)) no-repeat,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--tear) * 2) var(--tear) repeat-x;
+}
+
+.ico {
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -227,6 +227,8 @@ describe('simulation: scoring and orders', () => {
     expect(r.expired).toBeGreaterThan(0);
     expect(r.expiredPenalty).toBeGreaterThan(0);
     expect(sim.score).toBeGreaterThanOrEqual(0);
+    // breakdown adds up exactly (100 starting points were injected by the test)
+    expect(100 + r.dishPoints + r.tips + r.coopBonus - r.expiredPenalty - r.wastePenalty).toBe(r.score);
   });
 
   it('respects max simultaneous orders per player count', () => {
@@ -310,6 +312,17 @@ describe('simulation: movement', () => {
     b.z = a.z;
     run(sim, 1);
     expect(Math.hypot(a.x - b.x, a.z - b.z)).toBeGreaterThan(0.4);
+  });
+
+  it('turns on a short flick even if released before the next tick', () => {
+    const sim = makeSim('burger-1', 2);
+    const p = sim.debugPlayer('p0')!;
+    const x0 = p.x;
+    sim.setInput('p0', 1, 0, false);
+    sim.setInput('p0', 0, 0, false);
+    sim.step(0.05);
+    expect(p.a).toBeCloseTo(Math.PI / 2);
+    expect(p.x).toBe(x0);
   });
 
   it('ignores input from disconnected players', () => {

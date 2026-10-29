@@ -508,6 +508,15 @@ export class Room {
       });
       this.needFull = false;
     }
+    for (const ev of this.pendingEvents) {
+      if (!('p' in ev)) continue;
+      const target = this.players.find((x) => x.id === ev.p)?.conn;
+      if (!target) continue;
+      if (ev.e === 'invalid') target.send({ t: 'fb', kind: 'invalid', text: ev.reason });
+      else if (ev.e === 'served') target.send({ t: 'fb', kind: 'served', text: `+${ev.points + ev.tip + ev.coop}` });
+      else if (ev.e === 'wrongDish') target.send({ t: 'fb', kind: 'wrong', text: 'Cap comanda demana aquest plat' });
+      else if (ev.e === 'pickup') target.send({ t: 'fb', kind: 'pickup', text: '' });
+    }
     this.pendingEvents = [];
     for (const p of this.players) {
       if (!p.conn || !this.activeIds.includes(p.id)) continue;
@@ -545,6 +554,7 @@ export class Room {
       stars: this.stars,
       pauseReason: this.pauseReason,
       countdownEndsAt: this.countdownEndsAt,
+      countdownLeftMs: this.countdownEndsAt === null ? null : Math.max(0, this.countdownEndsAt - this.opts.now()),
       activePlayerCount: this.activeIds.length,
     };
   }

@@ -140,6 +140,7 @@ export class GameSimulation {
   delivered = 0;
   expired = 0;
   tips = 0;
+  dishPoints = 0;
   coopBonus = 0;
   wastePenalty = 0;
   expiredPenalty = 0;
@@ -197,6 +198,8 @@ export class GameSimulation {
     p.input.x = x;
     p.input.z = z;
     p.input.use = use;
+    // A short flick turns the chef even if it is released before the next tick moves them.
+    if (p.connected && Math.hypot(x, z) > 0.2) p.a = Math.atan2(x, z);
   }
 
   queueInteract(id: string): void {
@@ -516,9 +519,8 @@ export class GameSimulation {
         return {
           label: held.kind === 'plate' ? 'Buidar el plat' : 'Llençar',
           apply: () => {
-            const pen = this.wasteItem(held);
+            const pen = this.applyPenalty(this.wasteItem(held));
             this.wastePenalty += pen;
-            this.score = Math.max(0, this.score - pen);
             if (held.kind === 'plate') held.contents = [];
             else p.held = null;
             this.events.push({ e: 'trash', p: p.id, waste: pen });
@@ -643,6 +645,7 @@ export class GameSimulation {
     const handlers = countBits(touched);
     const coop = handlers >= 2 ? Math.round(base * SIM.coopRatio) : 0;
     this.score += base + tip + coop;
+    this.dishPoints += base;
     this.tips += tip;
     this.coopBonus += coop;
     this.delivered++;
@@ -653,6 +656,13 @@ export class GameSimulation {
     if (stack) this.plateReturns.push({ at: this.elapsed + SIM.plateReturnDelay, st: stack });
     this.events.push({ e: 'served', p: p.id, order: order.id, points: base, tip, coop, recipe: order.recipe.id });
     if (this.orders.length === 0) this.spawnTimer = Math.min(this.spawnTimer, 1.5);
+  }
+
+  /** Score never goes below zero; returns the amount actually deducted (so breakdowns add up). */
+  private applyPenalty(amount: number): number {
+    const d = Math.min(this.score, amount);
+    this.score -= d;
+    return d;
   }
 
   // ───────────── Use (held ACTION) ─────────────
@@ -744,8 +754,7 @@ export class GameSimulation {
     for (const o of this.orders) o.t -= dt;
     const expired = this.orders.filter((o) => o.t <= 0);
     for (const o of expired) {
-      const pen = Math.round(o.recipe.points * SIM.expiredPenaltyRatio);
-      this.score = Math.max(0, this.score - pen);
+      const pen = this.applyPenalty(Math.round(o.recipe.points * SIM.expiredPenaltyRatio));
       this.expiredPenalty += pen;
       this.expired++;
       this.events.push({ e: 'orderExpired', order: o.id, recipe: o.recipe.id, penalty: pen });
@@ -909,6 +918,7 @@ export class GameSimulation {
       thresholds: this.balance.stars,
       delivered: this.delivered,
       expired: this.expired,
+      dishPoints: this.dishPoints,
       tips: this.tips,
       coopBonus: this.coopBonus,
       wastePenalty: this.wastePenalty,
