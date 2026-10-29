@@ -669,6 +669,7 @@ function showCredits(): void {
       h('p', {}, 'Tipografies: Lilita One (Juan Montoreano) i Rubik (Hubert & Fischer), llicència SIL Open Font License 1.1.'),
       h('p', {}, 'Tecnologia: Three.js (MIT), ws (MIT), qrcode (MIT), Vite (MIT).'),
       h('p', {}, `Versió ${GAME_VERSION} · protocol ${PROTOCOL_VERSION}`),
+      h('p', {}, `Autora: Lola Riera Rojas`),
       close,
     ),
   );
