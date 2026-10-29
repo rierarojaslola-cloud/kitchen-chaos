@@ -9,6 +9,7 @@ import { INGREDIENTS } from '@kc/game-logic';
 import type { Theme } from '../themes';
 import { labelTexture, woodTexture } from '../textures';
 import { buildIngredient, buildPlateBase } from './food';
+import { buildStationGlb } from './stationsGlb';
 import { cone, cyl, lathe, lumpy, mat, mergeStatic, mesh, rbox, sphere, torus, uniqueMat } from './kit';
 
 export interface StationAnimState {
@@ -21,6 +22,8 @@ export interface StationAnimState {
 
 export interface StationObject extends THREE.Group {
   userData: {
+    /** Built from a Blender GLB (true) or procedurally (false). */
+    glb?: boolean;
     anchor: THREE.Vector3;
     animate?: (s: StationAnimState) => void;
     /** Height for overhead indicators. */
@@ -255,8 +258,14 @@ function wok(theme: Theme): StationObject {
 function plates(theme: Theme, style: 'plate' | 'board' | 'bowl'): StationObject {
   const s = station(0.92);
   s.add(cabinet(theme));
+  attachPlateStack(s, theme, style, 0.92);
+  return s;
+}
+
+/** Live plate stack (count from the server) shared by procedural and GLB stations. */
+export function attachPlateStack(s: StationObject, theme: Theme, style: 'plate' | 'board' | 'bowl', y: number): void {
   const stack = new THREE.Group();
-  stack.position.y = 0.92;
+  stack.position.y = y;
   stack.userData.dynamic = true;
   s.add(stack);
   let shown = -1;
@@ -264,7 +273,10 @@ function plates(theme: Theme, style: 'plate' | 'board' | 'bowl'): StationObject 
     const n = Math.min(8, view.n ?? 0);
     if (n === shown) return;
     shown = n;
-    stack.clear();
+    for (const c of [...stack.children]) {
+      c.removeFromParent();
+      (c as THREE.Mesh).geometry?.dispose();
+    }
     for (let i = 0; i < n; i++) {
       const { obj } = buildPlateBase(style, theme.plateColor, theme.plateRim);
       obj.position.y = i * (style === 'bowl' ? 0.07 : 0.035);
@@ -273,7 +285,6 @@ function plates(theme: Theme, style: 'plate' | 'board' | 'bowl'): StationObject 
     }
     mergeStatic(stack);
   };
-  return s;
 }
 
 function serve(theme: Theme): StationObject {
@@ -359,8 +370,14 @@ function crate(theme: Theme, ing: IngredientKind): StationObject {
     }
   }
   s.add(box);
+  attachCrateContents(s, ing, new THREE.Vector3(0, 0.66, 0), new THREE.Vector3(0, 0.38, 0.465));
+  return s;
+}
+
+/** Sample food inside a crate + emoji sign + "BUIT" (empty) sign driven by shortages. */
+export function attachCrateContents(s: StationObject, ing: IngredientKind, fillPos: THREE.Vector3, signPos: THREE.Vector3): void {
   const fill = new THREE.Group();
-  fill.position.y = 0.66;
+  fill.position.copy(fillPos);
   const spots: [number, number, number][] = [[-0.2, 0, -0.15], [0.18, 0, -0.18], [0, 0.04, 0.12], [-0.22, 0.02, 0.18], [0.22, 0.03, 0.15]];
   for (const [i, [x, y, z]] of spots.entries()) {
     const o = buildIngredient({ k: 'ing', id: 0, ing, st: 'raw', p: 0, b: 0 });
@@ -372,11 +389,10 @@ function crate(theme: Theme, ing: IngredientKind): StationObject {
   fill.userData.dynamic = true;
   mergeStatic(fill);
   s.add(fill);
-  // sign
   const sign = mesh(new THREE.PlaneGeometry(0.46, 0.23), new THREE.MeshBasicMaterial({ map: labelTexture(INGREDIENTS[ing].emoji, '#fff4dc', '#2a1d17', '700 92px "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif'), transparent: true }), false);
-  sign.position.set(0, 0.38, 0.465);
+  sign.position.copy(signPos);
   const empty = mesh(new THREE.PlaneGeometry(0.46, 0.23), new THREE.MeshBasicMaterial({ map: labelTexture('BUIT', '#ff5a3c', '#ffffff', '400 70px "Lilita One", sans-serif'), transparent: true }), false);
-  empty.position.set(0, 0.38, 0.47);
+  empty.position.copy(signPos).add(new THREE.Vector3(0, 0, 0.005));
   empty.visible = false;
   empty.userData.dynamic = true;
   s.add(sign, empty);
@@ -384,10 +400,15 @@ function crate(theme: Theme, ing: IngredientKind): StationObject {
     fill.visible = !view.empty;
     empty.visible = !!view.empty;
   };
-  return s;
 }
 
 export function buildStation(def: StationInit, theme: Theme, plateStyle: 'plate' | 'board' | 'bowl'): StationObject {
+  const fromGlb = buildStationGlb(def, theme, plateStyle);
+  if (fromGlb) return fromGlb;
+  return buildProceduralStation(def, theme, plateStyle);
+}
+
+export function buildProceduralStation(def: StationInit, theme: Theme, plateStyle: 'plate' | 'board' | 'bowl'): StationObject {
   switch (def.type) {
     case 'counter':
       return counter(theme);

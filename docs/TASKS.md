@@ -9,11 +9,12 @@
 4. Listen to all music/SFX on speakers; fix levels/mix.
 
 ## P1 — art production (replace provisional procedural assets, keep interfaces)
-5. Blender → GLB pipeline: loader with fallback to procedural builder, scale/pivot conventions, Draco/
-   meshopt compression, texture atlases (see ASSETS.md "Production priorities").
-6. Skinned chef characters (rig + idle/walk/run/carry/chop/stir/serve/celebrate/sad clips).
-7. Hero props: grill, stone oven, wok, pot, serve pass; food hero items.
+5. ~~Blender → GLB pipeline~~ ✅ 2026-10-29 · ~~rigged chefs~~ ✅ · ~~station hero props~~ ✅
+6. Food hero items in Blender (burger stack, pizza, bowls, raw ingredients) — next art task.
+7. Plates/bowls and restaurant decor (lanterns, oven, neon sign, plants) in Blender.
 8. PBR maps for floors/walls/counters; contact-shadow pass.
+8b. Readability: chefs standing behind the front counter row are partly hidden by it — add an
+    x-ray silhouette or lower the front counters.
 
 ## P2 — content & features
 9. Cosmetic unlocks (hats/aprons/colours) earned by stars; chef customisation screen.

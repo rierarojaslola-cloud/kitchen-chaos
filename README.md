@@ -119,6 +119,18 @@ Sota `https://`, els clients fan servir `wss://` automàticament. Els QR apunten
 - Bonus: propina per rapidesa i **bonus d'equip** si el plat l'han tocat 2 o més xefs.
 - Orientació recomanada del mòbil: **horitzontal** (dos polzes). En vertical també funciona.
 
+## Models 3D (Blender)
+
+Els xefs i les estacions es generen amb scripts de Blender i es guarden ja compilats a
+`apps/web/public/models`, així que **per jugar o publicar no cal Blender**. Per regenerar-los:
+
+```bash
+pip install bpy          # Blender 5.x com a mòdul de Python (o fes servir el binari de Blender)
+npm run assets:build     # dades → Blender → GLB → compressió meshopt
+```
+
+Amb `?procedural=1` a l'adreça de la pantalla gran es fan servir els models antics (per comparar).
+
 ## Estructura
 
 ```
@@ -127,6 +139,7 @@ apps/web           client: index.html (pantalla gran), controller.html (mòbil)
 packages/shared    protocol, validació, constants, personatges, màquina d'estats
 packages/game-logic simulació pura: ingredients, receptes, nivells, equilibri, puntuació
 tests/             unit, integration, e2e
+assets-src/blender scripts de modelatge (xefs, estacions), previsualització
 docs/              arquitectura, decisions, protocol, seguretat, estat, assets, tasques, proves
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "kitchen-chaos",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -15,12 +15,15 @@
     "start": "tsx apps/server/src/index.ts --serve",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:e2e": "node --import tsx tests/e2e/run-e2e.ts"
+    "test:e2e": "node --import tsx tests/e2e/run-e2e.ts",
+    "assets:build": "tsx scripts/export-asset-data.ts && python assets-src/blender/build_all.py && node scripts/optimize-models.mjs",
+    "assets:optimize": "node scripts/optimize-models.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
     "@sparticuz/chromium": "^153.0.0",
     "@types/node": "^26.6.6",
     "@types/qrcode": "^1.5.6",

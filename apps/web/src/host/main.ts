@@ -26,6 +26,7 @@ import { audio } from '../audio/audio';
 import { chefPortrait, UI_ICONS } from '../common/icons';
 import { h, store, svg } from '../common/dom';
 import { AttractMode } from './attract';
+import { assets } from '../render/assets';
 import { Hud } from './hud';
 
 type View = 'menu' | 'creating' | 'lobby' | 'countdown' | 'playing' | 'paused' | 'results' | 'error';
@@ -664,7 +665,7 @@ function showCredits(): void {
       'div',
       { class: 'panel', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Crèdits' },
       h('h2', {}, 'Crèdits'),
-      h('p', {}, 'Kitchen Chaos: Service Rush (nom provisional). Joc, models 3D procedurals, textures, icones, música i efectes de so originals, generats per codi.'),
+      h('p', {}, 'Kitchen Chaos: Service Rush (nom provisional). Joc, models 3D (modelats amb scripts de Blender), textures, icones, música i efectes de so originals.'),
       h('p', {}, 'Tipografies: Lilita One (Juan Montoreano) i Rubik (Hubert & Fischer), llicència SIL Open Font License 1.1.'),
       h('p', {}, 'Tecnologia: Three.js (MIT), ws (MIT), qrcode (MIT), Vite (MIT).'),
       h('p', {}, `Versió ${GAME_VERSION} · protocol ${PROTOCOL_VERSION}`),
@@ -733,7 +734,13 @@ scene.onFrame = () => {
 if (settings.reducedMotion) document.body.classList.add('reduced');
 
 // boot
-document.fonts.ready.finally(() => {
+const bootText = document.querySelector('#boot p');
+Promise.all([
+  document.fonts.ready.catch(() => undefined),
+  assets.load((done, total) => {
+    if (bootText) bootText.textContent = `Preparant la cuina… ${Math.round((done / total) * 100)}%`;
+  }),
+]).finally(() => {
   setView(sessionStore.get() ? 'creating' : 'menu');
   if (!sessionStore.get()) render();
   setTimeout(() => document.getElementById('boot')?.classList.add('gone'), 200);
@@ -748,6 +755,7 @@ document.fonts.ready.finally(() => {
     return state.room;
   },
   stats: () => scene.stats(),
+  assets: () => ({ loaded: assets.count, failed: assets.failed, disabled: assets.disabled }),
   get level() {
     return state.level;
   },

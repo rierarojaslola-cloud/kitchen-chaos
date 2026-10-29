@@ -143,7 +143,11 @@ export function mergeStatic(root: THREE.Object3D): number {
       const g = m.geometry;
       if (g.attributes.position && g.attributes.normal && g.attributes.uv) {
         let c = g.index ? g.toNonIndexed() : g.clone();
-        for (const name of Object.keys(c.attributes)) if (!['position', 'normal', 'uv'].includes(name)) c.deleteAttribute(name);
+        for (const name of Object.keys(c.attributes)) {
+          if (!['position', 'normal', 'uv'].includes(name)) c.deleteAttribute(name);
+          // quantized / interleaved GLB attributes → plain float32 (safe to transform and merge)
+          else c.setAttribute(name, toFloatAttribute(c.getAttribute(name)));
+        }
         c.morphAttributes = {};
         c.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
         const key = `${m.material.uuid}|${m.castShadow}|${m.receiveShadow}|${m.renderOrder}`;
@@ -174,4 +178,15 @@ export function mergeStatic(root: THREE.Object3D): number {
     if (!cached.has(v.geometry)) v.geometry.dispose();
   }
   return made;
+}
+
+/** Copies any (normalized int, interleaved…) attribute into a Float32 BufferAttribute. */
+export function toFloatAttribute(attr: THREE.BufferAttribute | THREE.InterleavedBufferAttribute): THREE.BufferAttribute {
+  if (attr instanceof THREE.BufferAttribute && attr.array instanceof Float32Array && !attr.normalized) return attr;
+  const n = attr.count;
+  const k = attr.itemSize;
+  const out = new Float32Array(n * k);
+  const getters = [attr.getX, attr.getY, attr.getZ, attr.getW];
+  for (let i = 0; i < n; i++) for (let j = 0; j < k; j++) out[i * k + j] = getters[j]!.call(attr, i);
+  return new THREE.BufferAttribute(out, k);
 }

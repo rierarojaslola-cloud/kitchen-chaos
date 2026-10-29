@@ -1,0 +1,98 @@
+{
+  "chef-bru": {
+    "file": "chef-bru.glb",
+    "tris": 12360,
+    "blender": "5.2.3 LTS",
+    "bytes": 171884
+  },
+  "chef-kai": {
+    "file": "chef-kai.glb",
+    "tris": 10040,
+    "blender": "5.2.3 LTS",
+    "bytes": 143324
+  },
+  "chef-lua": {
+    "file": "chef-lua.glb",
+    "tris": 10868,
+    "blender": "5.2.3 LTS",
+    "bytes": 151576
+  },
+  "chef-mei": {
+    "file": "chef-mei.glb",
+    "tris": 11196,
+    "blender": "5.2.3 LTS",
+    "bytes": 158240
+  },
+  "chef-nuri": {
+    "file": "chef-nuri.glb",
+    "tris": 12300,
+    "blender": "5.2.3 LTS",
+    "bytes": 177776
+  },
+  "chef-rocco": {
+    "file": "chef-rocco.glb",
+    "tris": 10424,
+    "blender": "5.2.3 LTS",
+    "bytes": 141396
+  },
+  "station-board": {
+    "file": "station-board.glb",
+    "tris": 1652,
+    "blender": "5.2.3 LTS",
+    "bytes": 31056
+  },
+  "station-counter": {
+    "file": "station-counter.glb",
+    "tris": 1100,
+    "blender": "5.2.3 LTS",
+    "bytes": 19852
+  },
+  "station-crate": {
+    "file": "station-crate.glb",
+    "tris": 2612,
+    "blender": "5.2.3 LTS",
+    "bytes": 33024
+  },
+  "station-fryer": {
+    "file": "station-fryer.glb",
+    "tris": 2184,
+    "blender": "5.2.3 LTS",
+    "bytes": 39824
+  },
+  "station-grill": {
+    "file": "station-grill.glb",
+    "tris": 2652,
+    "blender": "5.2.3 LTS",
+    "bytes": 41320
+  },
+  "station-oven": {
+    "file": "station-oven.glb",
+    "tris": 2800,
+    "blender": "5.2.3 LTS",
+    "bytes": 34024
+  },
+  "station-pot": {
+    "file": "station-pot.glb",
+    "tris": 2848,
+    "blender": "5.2.3 LTS",
+    "bytes": 45104
+  },
+  "station-serve": {
+    "file": "station-serve.glb",
+    "tris": 2324,
+    "blender": "5.2.3 LTS",
+    "bytes": 38592
+  },
+  "station-trash": {
+    "file": "station-trash.glb",
+    "tris": 1160,
+    "blender": "5.2.3 LTS",
+    "bytes": 18800
+  },
+  "station-wok": {
+    "file": "station-wok.glb",
+    "tris": 2164,
+    "blender": "5.2.3 LTS",
+    "bytes": 38312
+  }
+}

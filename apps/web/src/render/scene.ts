@@ -17,6 +17,7 @@ import {
 import { THEMES, type Theme } from './themes';
 import { buildStation, DIR_ROT, type StationObject } from './models/stations';
 import { buildChef, type ChefRig } from './models/chef';
+import { buildChefGlb } from './models/chefGlb';
 import { buildIngredient, buildPlate, itemSignature, type FoodObject } from './models/food';
 import { disposeUncached, mat, mergeStatic, mesh, rbox, torus } from './models/kit';
 import { Particles } from './particles';
@@ -348,7 +349,7 @@ export class KitchenScene {
 
   private addChef(p: PlayerView): ChefEntry {
     const charId = this.characterOf.get(p.id) ?? 'nuri';
-    const rig = buildChef(getCharacter(charId));
+    const rig = buildChefGlb(getCharacter(charId)) ?? buildChef(getCharacter(charId));
     const color = SLOT_COLORS[p.slot] ?? '#ffffff';
     const ring = mesh(torus(0.36, 0.035, Math.PI * 2, 6, 32), mat(color, { emissive: color, emissiveIntensity: 0.9, rough: 0.4 }), false);
     ring.rotation.x = Math.PI / 2;

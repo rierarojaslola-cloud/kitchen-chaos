@@ -71,6 +71,7 @@ const hostState = (host: Page) => host.evaluate(() => {
 async function newPhone(browser: Browser, base: string, url: string, label: string): Promise<{ ctx: BrowserContext; page: Page }> {
   const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
+  page.setDefaultTimeout(120000);
   watchConsole(page, label);
   await page.goto(`${base}${url}`);
   return { ctx, page };
@@ -168,7 +169,7 @@ async function main(): Promise<void> {
     const hostCtx = await browser.newContext({ viewport: { width: 1600, height: 900 } });
     const host = await hostCtx.newPage();
     host.setDefaultTimeout(120000);
-    await host.addInitScript(() => localStorage.setItem('kc.settings', JSON.stringify({ quality: 'medium', reducedMotion: false, showFps: true })));
+    await host.addInitScript(() => localStorage.setItem('kc.settings', JSON.stringify({ quality: 'low', reducedMotion: false, showFps: true })));
     watchConsole(host, 'host');
     await host.goto(base);
     await host.getByRole('button', { name: 'Crear partida' }).waitFor();

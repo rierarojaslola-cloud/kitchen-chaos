@@ -70,3 +70,17 @@ The server is a single Node process that already serves the client and the WebSo
 (~1 min cold start) and rooms are lost on restart; upgrade to a paid instance for always-on.
 **Verified:** a clean checkout builds and serves with Render's exact build/start commands. The
 Dockerfile has not been built (no Docker in the dev environment).
+
+## ADR-010 — Blender asset pipeline driven by Python scripts
+**Status:** accepted (2026-10-29)
+**Context:** Procedural Three.js primitives capped visual quality (ADR-003). Blender is available as the
+`bpy` Python module in the build environment and on the user's PC.
+**Decision:** model characters and stations with versioned Python scripts in `assets-src/blender`
+(modifiers: bevel, subdivision, solidify; armature + baked actions), export GLB, compress with meshopt +
+quantization, commit the results. Character data comes from `packages/shared` (single source of truth).
+Rigid bone-parented rig instead of weighted skinning for v1.
+**Consequences:** + reproducible, reviewable diffs, consistent proportions, 1.25 MB total, fewer triangles
+than before; procedural builders stay as runtime fallback. − Script-modelled shapes, not hand sculpted;
+an artist can later open the generated scene in Blender, refine and keep the same node/material names.
+**Evidence:** chefs 10–12.4k tris, stations 1.1–2.8k; in-game burger-2: 250k tris / 358 draw calls (GLB)
+vs 281k / 281 (procedural).
